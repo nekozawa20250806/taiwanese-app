@@ -5,19 +5,17 @@ from openpyxl.styles import Alignment, Font
 from openpyxl.utils import get_column_letter
 import io
 import json
-import openai
 import os
+from openai import OpenAI
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
+# OpenAIクライアント設定
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 st.title("台湾華語文章解析ツール（Excel & CSV出力）")
 
 # モデル選択UI
 model_choice = st.selectbox("モデルを選択してください", ["GPT-4", "GPT-3.5"], index=0)
-if model_choice == "GPT-4":
-    model_name = "gpt-4"
-else:
-    model_name = "gpt-3.5-turbo"
+model_name = "gpt-4" if model_choice == "GPT-4" else "gpt-3.5-turbo"
 
 st.markdown("### 台湾華語の文章を入力してください（1行1文）：")
 input_text = st.text_area("文章入力", height=200, placeholder="隨著國家經濟發展至一定程度...")
@@ -49,12 +47,12 @@ if st.button("解析してファイル生成"):
 }}
 """
             try:
-                response = openai.ChatCompletion.create(
+                response = client.chat.completions.create(
                     model=model_name,
                     messages=[{"role": "user", "content": prompt}],
                     temperature=0.7
                 )
-                result = response.choices[0].message["content"]
+                result = response.choices[0].message.content
                 parsed = json.loads(result)
 
                 sentences_data.append([sentence, parsed["japanese"], parsed["pinyin"]])
