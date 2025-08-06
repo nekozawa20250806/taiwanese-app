@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 from openpyxl import Workbook
@@ -13,6 +12,13 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 
 st.title("台湾華語文章解析ツール（Excel & CSV出力）")
 
+# モデル選択UI
+model_choice = st.selectbox("モデルを選択してください", ["GPT-4", "GPT-3.5"], index=0)
+if model_choice == "GPT-4":
+    model_name = "gpt-4"
+else:
+    model_name = "gpt-3.5-turbo"
+
 st.markdown("### 台湾華語の文章を入力してください（1行1文）：")
 input_text = st.text_area("文章入力", height=200, placeholder="隨著國家經濟發展至一定程度...")
 
@@ -25,7 +31,7 @@ if st.button("解析してファイル生成"):
         sentences_data = []
         glossary_data = []
 
-        st.info(f"ChatGPTで解析中...（{len(sentences)} 文）")
+        st.info(f"{model_choice} で解析中...（{len(sentences)} 文）")
 
         for sentence in sentences:
             prompt = f"""
@@ -44,7 +50,7 @@ if st.button("解析してファイル生成"):
 """
             try:
                 response = openai.ChatCompletion.create(
-                    model="gpt-4",
+                    model=model_name,
                     messages=[{"role": "user", "content": prompt}],
                     temperature=0.7
                 )
