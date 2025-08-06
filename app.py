@@ -15,7 +15,7 @@ st.title("台湾華語文章解析ツール（Excel & CSV出力）")
 
 # モデル選択UI
 model_choice = st.selectbox("モデルを選択してください", ["GPT-4", "GPT-3.5"], index=0)
-model_name = "gpt-4" if model_choice == "GPT-4" else "gpt-3.5-turbo"
+model_name = "gpt-4o" if model_choice == "GPT-4" else "gpt-3.5-turbo"
 
 st.markdown("### 台湾華語の文章を入力してください（1行1文）：")
 input_text = st.text_area("文章入力", height=200, placeholder="隨著國家經濟發展至一定程度...")
